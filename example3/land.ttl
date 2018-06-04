@@ -1,0 +1,55 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix  rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@base <http://geotriples.eu/base> .
+@prefix rrx: <http://www.w3.org/ns/r2rml-ext#>.
+@prefix rrxf: <http://www.w3.org/ns/r2rml-ext/functions/def/>.
+@prefix ogc: <http://www.opengis.net/ont/geosparql#>.
+@prefix schema: <http://schema.org/>.
+@prefix geonames: <http://www.geonames.org/ontology#>.
+
+<#land_Geometry>
+rml:logicalSource [
+	rml:source "land.csv";
+	rml:referenceFormulation ql:CSV;
+	rml:iterator "land";
+];
+rr:subjectMap [
+	rr:template "http://example.org/country/Geometry/{ICC}";
+	rr:class ogc:Geometry;
+];
+rr:predicateObjectMap [
+	rr:predicateMap [ rr:constant ogc:asWKT ];
+	rr:objectMap [
+		rr:datatype  ogc:wktLiteral;
+		rml:reference "WKT";
+	];
+];
+.
+
+<#land>
+rml:logicalSource [
+	rml:source "land.csv";
+	rml:referenceFormulation ql:CSV;
+	rml:iterator "land";
+];
+rr:subjectMap [
+	rr:template "http://example.org/country/{ICC}";
+	rr:class schema:Country;
+];
+
+rr:predicateObjectMap [
+	rr:predicateMap [ rr:constant schema:name ];
+	rr:objectMap [
+		rr:datatype  xsd:string;
+		rml:reference "NAME";
+	];
+];
+rr:predicateObjectMap [
+	rr:predicateMap [ rr:constant ogc:hasGeometry ];
+	rr:objectMap [
+		rr:template "http://example.org/country/Geometry/{ICC}";
+	];
+].
+

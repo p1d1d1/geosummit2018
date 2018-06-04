@@ -1,0 +1,23 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <http://schema.org/>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dcterms:	<http://purl.org/dc/terms/>
+PREFIX ex: <http://www.example.org/>
+PREFIX ogc: <http://www.opengis.net/ont/geosparql#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX org:	<http://www.w3.org/ns/org#>
+
+CONSTRUCT {
+  ?URI a foaf:Person
+    foaf:givenname ?Name;
+    foaf:family_name ?FamilyName;
+    org:memberOf ?swisstopo;
+}
+
+WHERE {
+  BIND (URI(CONCAT('http://example.org/people/', ?ID)) AS ?URI)
+  BIND (URI(CONCAT('http://example.org/admin/', ?Employer)) AS ?swisstopo)
+}
+

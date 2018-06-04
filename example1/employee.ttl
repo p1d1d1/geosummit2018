@@ -1,0 +1,41 @@
+@prefix rr:			<http://www.w3.org/ns/r2rml#>.
+@prefix rml:    	<http://semweb.mmlab.be/ns/rml#>.
+@prefix rdf:   		<http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix foaf: 		<http://xmlns.com/foaf/0.1/>.
+@prefix people: 	<http://www.example.org/people/>.
+@prefix admin:		<http://www.example.org/admin/>.
+@prefix org:		<http://www.w3.org/ns/org#>.
+@prefix ql:    		<http://semweb.mmlab.be/ns/ql#>.
+
+<#EmployeeMapping>
+	rml:logicalSource [
+	rml:source "employee.csv";
+	rml:referenceFormulation ql:CSV];
+
+	rr:subjectMap [
+    rr:template "http://www.example.org/people/{ID}";
+    rr:class foaf:Person
+	];
+
+    rr:predicateObjectMap [
+    rr:predicate foaf:givenname;
+    rr:objectMap [
+      rml:reference "Name";
+    ]
+	];
+
+    rr:predicateObjectMap [
+    rr:predicate foaf:family_name;
+    rr:objectMap [
+      rml:reference "FamilyName";
+    ]
+	];
+
+    rr:predicateObjectMap [
+    rr:predicate org:memberOf;
+    rr:objectMap [
+	  rr:termType rr:IRI;	
+      rr:template "http://www.example.org/admin/{Employer}";
+    ]
+  ] ;
+.

@@ -1,0 +1,67 @@
+Parliament Triple Store and YASGUI
+----------------------------------
+
+Parliament data is stored in the volume /usr/local/ParliamentKB/data within the container.
+Note that unless you use docker restart or one of the mechanisms below, data is lost between each run of the image.
+
+To store the data in a named Docker volume container parliament-data, create it first as:
+
+docker run --name parliament-data -v /usr/local/ParliamentKB/data busybox
+
+Then start Parliament using --volumes-from. This allows you to later upgrade the
+Parliament docker image without losing the data. The command below also uses
+-d to start the container in the background.
+
+docker run -d --name parliament --volumes-from parliament-data -p 8089:8089 daxid/parliament-triplestore
+
+YASGUI
+----------------------------------
+1) Go to http://yasgui.org/
+2) Use "http://localhost:8089/parliament/sparql" as SPARQL Endpoint 
+
+
+Queries:
+
+@POINT
+------
+
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+
+SELECT DISTINCT ?s ?Geom
+WHERE {
+    ?s a geo:Geometry.
+    ?s geo:asWKT ?Geom.
+    FILTER (geof:sfContains(?Geom, "Point(7.24 46.55))"^^geo:wktLiteral))
+}
+
+@POINTinPOLYGON
+------
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+
+SELECT ?CantonCoords ?Coords
+WHERE {
+    ?Stop a <http://schema.org/BusStation> .
+    ?Stop geo:hasGeometry ?StopGeom .
+    ?StopGeom geo:asWKT ?Coords .
+    <https://ld.geo.admin.ch/boundaries/canton/geometry/2> geo:asWKT ?CantonCoords .
+    FILTER (geof:sfWithin(?Coords, ?CantonCoords))  
+}
+
+Within a distance < 70000 metres
+--------------------------------
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+
+SELECT ?Coords ?FromPoint ?FromPointColor
+WHERE {
+    <https://ld.geo.admin.ch/transportation/stop/geometry/8576727> geo:asWKT ?FromPoint .
+    ?Stop a <http://schema.org/BusStation> .
+    ?Stop geo:hasGeometry ?StopGeom .
+    ?StopGeom geo:asWKT ?Coords .
+  values (?FromPointColor) {("red")}
+  BIND(geof:distance(?FromPoint, ?Coords, uom:metre) AS ?Distance)
+  FILTER (?Distance < 70000) 
+}

@@ -1,0 +1,5 @@
+ogr2ogr -f CSV land.csv land.shp -lco GEOMETRY=AS_WKT (land.shp from example3)
+
+java -jar .\RML-Mapper.jar -m .\land.ttl -o land.nt -f ntriple
+
+

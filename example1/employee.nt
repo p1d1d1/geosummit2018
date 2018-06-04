@@ -1,0 +1,4 @@
+<http://www.example.org/people/udip> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+<http://www.example.org/people/udip> <http://xmlns.com/foaf/0.1/family_name> "Di Donato" .
+<http://www.example.org/people/udip> <http://www.w3.org/ns/org#memberOf> <http://www.example.org/admin/swisstopo> .
+<http://www.example.org/people/udip> <http://xmlns.com/foaf/0.1/givenname> "Pasquale" .

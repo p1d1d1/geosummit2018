@@ -1,0 +1,1 @@
+java -jar .\RML-Mapper.jar -m .\employee.ttl -o employee.nt -f ntriple

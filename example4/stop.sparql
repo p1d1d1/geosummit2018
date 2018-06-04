@@ -1,0 +1,33 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <http://schema.org/>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dcterms:	<http://purl.org/dc/terms/>
+PREFIX ex: <http://www.example.org/>
+PREFIX ogc: <http://www.opengis.net/ont/geosparql#>
+
+CONSTRUCT {
+  ?URI a ?type;
+    dcterms:identifier ?Nummer;
+    schema:name ?Name;
+    schema:releaseDate ?dateRelease;
+    ogc:hasGeometry ?Geom;
+}
+WHERE {
+  BIND (URI(CONCAT('http://example.org/transportation/stop/', ?Nummer)) AS ?URI)
+  BIND (IF(?Verkehrsmittel="Bus",URI('http://schema.org/BusStation'),URI('http://schema.org/TrainStation')) AS ?type)
+  BIND (URI(CONCAT('http://example.org/transportation/stop/geometry/', ?Nummer)) AS ?Geom)
+  BIND (STRDT(CONCAT(SUBSTR(?Stand,1 ,4) ,"-", SUBSTR(?Stand,5,2) ,"-",SUBSTR(?Stand, 7,2)), xsd:date) AS ?dateRelease)
+  FILTER (?Betriebspunkttyp="Haltestelle" || ?Betriebspunkttyp="Haltestelle_und_Bedienpunkt")
+}
+
+CONSTRUCT {
+  ?URI a ogc:Geometry;
+    ogc:asWKT ?WKT;
+}
+WHERE {
+  BIND (URI(CONCAT('http://example.org/transportation/stop/geometry/', ?Nummer)) AS ?URI)
+  BIND (STRDT(CONCAT('POINT(',?X,' ',?Y,')'), ogc:wktLiteral) AS ?WKT)
+  FILTER (?Betriebspunkttyp="Haltestelle" || ?Betriebspunkttyp="Haltestelle_und_Bedienpunkt")
+}

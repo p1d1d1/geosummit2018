@@ -1,0 +1,5 @@
+.\bin\geotriples-mapping.bat -o mapping_generated.ttl -b http://example.org .\land.shp 
+
+.\bin\geotriples-rdf.bat -o land.nt .\land.ttl 
+
+
